@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, ChannelType, bold } from 'discord.js';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
+import { toTitleCase } from '@sapphire/utilities';
 
 @ApplyOptions<Command.Options>({
   description: 'Get help with commands',
@@ -43,7 +44,7 @@ export class HelpCommand extends Command {
         embeds: [
           this.container.embeds
             .normal()
-            .setTitle(command.name)
+            .setTitle(toTitleCase(command.name))
             .addFields(
               {
                 name: 'Description',

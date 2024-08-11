@@ -19,7 +19,8 @@
     "@sapphire/time-utilities": "^1.7.12",
     "@skyra/env-utilities": "^1.3.0",
     "discord.js": "^14.15.3",
-    "mongoose": "^8.5.2"
+    "mongoose": "^8.5.2",
+    "slot-machine": "^2.1.0"
   },
   "devDependencies": {
     "@sapphire/ts-config": "^5.0.1",

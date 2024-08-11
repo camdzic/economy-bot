@@ -14,8 +14,8 @@ export enum DefaultColor {
 
 // Values for the gambling system
 export const gamblingSettings = {
-  min: 10,
-  cooldown: Time.Second * 10
+  min: 100,
+  cooldown: Time.Second * 5
 };
 
 // Values for the work command
@@ -59,9 +59,16 @@ export const crimeCommand = {
   cooldown: Time.Second * 30
 };
 
+// Values for the rob command
 export const robCommand = {
-  caughtAt: 20,
-  proportion: 50,
+  caughtAt: 50,
+  proportion: 35,
   min: 100,
-  cooldown: Time.Second * 3
+  cooldown: Time.Minute * 5
+};
+
+// Values for the cockfight command
+export const cockfightCommand = {
+  startingWinRate: 60,
+  maxWinRate: 85
 };
