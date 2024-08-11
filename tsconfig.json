@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "@sapphire/ts-config",
+    "@sapphire/ts-config/extra-strict",
+    "@sapphire/ts-config/decorators"
+  ],
+  "compilerOptions": {
+    "baseUrl": "src",
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "paths": {
+      "#helpers/*": ["structures/helpers/*"],
+      "#lib/*": ["structures/lib/*"],
+      "#models/*": ["structures/models/*"],
+      "#services/*": ["structures/services/*"],
+      "#types/*": ["structures/types/*"],
+      "#utilities/*": ["structures/utilities/*"]
+    },
+    "plugins": [{ "transform": "typescript-transform-paths" }]
+  },
+  "include": ["src"]
+}
