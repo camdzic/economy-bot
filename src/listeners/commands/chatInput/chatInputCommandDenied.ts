@@ -8,7 +8,7 @@ import {
 export class ChatInputCommandDeniedListener extends Listener<
   typeof Events.ChatInputCommandDenied
 > {
-  override async run(error: unknown, payload: ChatInputCommandDeniedPayload) {
+  override run(error: unknown, payload: ChatInputCommandDeniedPayload) {
     if (!(error instanceof UserError)) return;
 
     if (Reflect.get(Object(error.context), 'silent')) return;

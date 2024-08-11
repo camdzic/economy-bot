@@ -48,6 +48,12 @@ export class AddMoneyCommand extends Command {
     const target = interaction.options.getUser('target', true);
     const amount = interaction.options.getInteger('amount', true);
 
+    if (target.bot) {
+      return interaction.editReply({
+        embeds: [this.container.embeds.error(`You can't add money to a bot!`)]
+      });
+    }
+
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
       target.id

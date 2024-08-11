@@ -23,7 +23,7 @@ export class LeaderboardCommand extends Command {
     const leaderboard = this.container.services.leaderboard.getLeaderboard(
       interaction.guildId
     );
-    const chunks = this.chunkArray(leaderboard, 10);
+    const chunks = this.chunkArray(leaderboard);
 
     const paginatedMessage = new ExtendedPaginatedMessage({
       pages: chunks.map((chunk) => ({
@@ -58,11 +58,11 @@ export class LeaderboardCommand extends Command {
     return paginatedMessage.run(interaction, interaction.user);
   }
 
-  private chunkArray<T>(array: T[], chunkSize: number): T[][] {
+  private chunkArray<T>(array: T[]) {
     const result: T[][] = [];
 
-    for (let i = 0; i < array.length; i += chunkSize) {
-      result.push(array.slice(i, i + chunkSize));
+    for (let i = 0; i < array.length; i += 10) {
+      result.push(array.slice(i, i + 10));
     }
 
     return result;

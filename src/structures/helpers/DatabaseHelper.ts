@@ -6,7 +6,7 @@ export class DatabaseHelper {
       (await UserModel.findOne({
         guildId,
         userId
-      })) ||
+      })) ??
       (await new UserModel({
         guildId,
         userId

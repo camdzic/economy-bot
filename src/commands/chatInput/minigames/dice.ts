@@ -7,7 +7,7 @@ import { parseMoney, prettyNumber, randomNumber } from '#lib/utils';
 @ApplyOptions<Command.Options>({
   description: 'Play a dice game',
   detailedDescription: {
-    usage: 'dice 500'
+    usage: '<wager> <guess>'
   },
   cooldownDelay: gamblingSettings.cooldown,
   runIn: ChannelType.GuildText

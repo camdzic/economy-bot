@@ -37,7 +37,7 @@ export class CrimeCommand extends Command {
       });
     }
 
-    const moneyEarned = randomNumber(
+    const earnedAmount = randomNumber(
       crimeCommand.income.min,
       crimeCommand.income.max
     );
@@ -48,7 +48,7 @@ export class CrimeCommand extends Command {
       userDoc.economy.transactions.push({
         type: 'expense',
         message: `Got caught committing a crime`,
-        amount: moneyEarned
+        amount: earnedAmount
       });
       await userDoc.save();
 
@@ -60,18 +60,18 @@ export class CrimeCommand extends Command {
         ]
       });
     } else {
-      userDoc.economy.wallet += moneyEarned;
+      userDoc.economy.wallet += earnedAmount;
       userDoc.economy.transactions.push({
         type: 'income',
         message: `Committed a crime`,
-        amount: moneyEarned
+        amount: earnedAmount
       });
       await userDoc.save();
 
       return interaction.editReply({
         embeds: [
           this.container.embeds.success(
-            `You committed a crime and earned ${bold(`$${prettyNumber(moneyEarned)}`)}`
+            `You committed a crime and earned ${bold(`$${prettyNumber(earnedAmount)}`)}`
           )
         ]
       });

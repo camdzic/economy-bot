@@ -58,3 +58,10 @@ export const crimeCommand = {
   },
   cooldown: Time.Second * 30
 };
+
+export const robCommand = {
+  caughtAt: 20,
+  proportion: 50,
+  min: 100,
+  cooldown: Time.Second * 3
+};

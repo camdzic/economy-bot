@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ChannelType } from 'discord.js';
+import { ApplicationCommandOptionType, ChannelType, bold } from 'discord.js';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 
@@ -60,7 +60,7 @@ export class HelpCommand extends Command {
       const prettyCommands = this.container.stores
         .get('commands')
         .filter((c) => c.enabled)
-        .map((c) => `> **/${c.name}** - ${c.description}`)
+        .map((c) => `> ${bold(`/${c.name}`)}・${c.description}`)
         .join('\n');
 
       return interaction.editReply({

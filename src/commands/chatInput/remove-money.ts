@@ -48,6 +48,14 @@ export class RemoveMoneyCommand extends Command {
     const target = interaction.options.getUser('target', true);
     const amount = interaction.options.getInteger('amount', true);
 
+    if (target.bot) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(`You can't remove money from a bot!`)
+        ]
+      });
+    }
+
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
       target.id

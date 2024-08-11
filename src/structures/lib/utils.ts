@@ -4,6 +4,10 @@ export function randomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function proportionOf(value: number, percentage: number) {
+  return Math.floor((value * percentage) / 100);
+}
+
 export function prettyNumber(number: number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
