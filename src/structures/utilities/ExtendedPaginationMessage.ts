@@ -14,8 +14,6 @@ function actionIsButton(
   return action.type === ComponentType.Button;
 }
 
-// This class is a wrapper around the PaginatedMessage class
-// It removes the menu from the PaginatedMessage if there are more than 25 pages
 export class ExtendedPaginatedMessage extends PaginatedMessage {
   override addPage(page: PaginatedMessagePage) {
     this.pages.push(page);

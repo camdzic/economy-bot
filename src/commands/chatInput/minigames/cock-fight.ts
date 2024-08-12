@@ -44,114 +44,61 @@ export class CockfightCommand extends Command {
 
     const game = this.initializeGame(interaction.guildId, interaction.user.id);
 
-    if (wager === 'all') {
-      const userWallet = userDoc.economy.wallet;
+    const realWager =
+      wager === 'all' ? userDoc.economy.wallet : parseMoney(wager);
 
-      if (userWallet < gamblingSettings.min) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You need at least ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
-            )
-          ]
-        });
-      }
+    if (realWager < gamblingSettings.min) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            `You need at least ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
+          )
+        ]
+      });
+    }
 
-      userDoc.economy.wagered += userWallet;
+    if (realWager > userDoc.economy.wallet) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            'You do not have enough money to play this game!'
+          )
+        ]
+      });
+    }
 
-      if (game.winner === 'user') {
-        userDoc.economy.wallet += userWallet;
-        userDoc.economy.transactions.push({
-          type: 'income',
-          message: 'Won a cockfight game',
-          amount: userWallet
-        });
+    userDoc.economy.wagered += realWager;
 
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.success(
-              `You won ${bold(`$${prettyNumber(userWallet)}`)}! Your win rate is now ${bold(`${game.rates.user}%`)} and the bot's win rate is ${bold(`${game.rates.bot}%`)}`
-            )
-          ]
-        });
-      } else {
-        userDoc.economy.wallet -= userWallet;
-        userDoc.economy.transactions.push({
-          type: 'expense',
-          message: 'Lost a cockfight game',
-          amount: userWallet
-        });
+    if (game.winner === 'user') {
+      userDoc.economy.wallet += realWager;
+      userDoc.economy.transactions.push({
+        type: 'income',
+        message: 'Won a cockfight game',
+        amount: realWager
+      });
 
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You lost ${bold(`$${prettyNumber(userWallet)}`)}! Your win rate was ${bold(`${game.rates.user}%`)} and the bot's win rate was ${bold(`${game.rates.bot}%`)}`
-            )
-          ]
-        });
-      }
+      interaction.editReply({
+        embeds: [
+          this.container.embeds.success(
+            `You won ${bold(`$${prettyNumber(realWager)}`)}! Your win rate is now ${bold(`${game.rates.user}%`)} and the bot's win rate is ${bold(`${game.rates.bot}%`)}`
+          )
+        ]
+      });
     } else {
-      const parsedAmount = parseMoney(wager);
+      userDoc.economy.wallet -= realWager;
+      userDoc.economy.transactions.push({
+        type: 'expense',
+        message: 'Lost a cockfight game',
+        amount: realWager
+      });
 
-      if (!parsedAmount) {
-        return interaction.editReply({
-          embeds: [this.container.embeds.error('Invalid amount of money!')]
-        });
-      }
-
-      if (parsedAmount < gamblingSettings.min) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You need at least  ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
-            )
-          ]
-        });
-      }
-
-      if (parsedAmount > userDoc.economy.wallet) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              'You do not have enough money to play this game!'
-            )
-          ]
-        });
-      }
-
-      userDoc.economy.wagered += parsedAmount;
-
-      if (game.winner === 'user') {
-        userDoc.economy.wallet += parsedAmount;
-        userDoc.economy.transactions.push({
-          type: 'income',
-          message: 'Won a cockfight game',
-          amount: parsedAmount
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.success(
-              `You won ${bold(`$${prettyNumber(parsedAmount)}`)}! Your win rate is now ${bold(`${game.rates.user}%`)} and the bot's win rate is ${bold(`${game.rates.bot}%`)}`
-            )
-          ]
-        });
-      } else {
-        userDoc.economy.wallet -= parsedAmount;
-        userDoc.economy.transactions.push({
-          type: 'expense',
-          message: 'Lost a cockfight game',
-          amount: parsedAmount
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You lost ${bold(`$${prettyNumber(parsedAmount)}`)}! Your win rate was ${bold(`${game.rates.user}%`)} and the bot's win rate was ${bold(`${game.rates.bot}%`)}`
-            )
-          ]
-        });
-      }
+      interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            `You lost ${bold(`$${prettyNumber(realWager)}`)}! Your win rate was ${bold(`${game.rates.user}%`)} and the bot's win rate was ${bold(`${game.rates.bot}%`)}`
+          )
+        ]
+      });
     }
 
     return await userDoc.save();

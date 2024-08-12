@@ -93,14 +93,12 @@ export class RobCommand extends Command {
         message: `Robbed ${target.tag}`,
         amount: stolenAmount
       });
-
       targetDoc.economy.wallet -= stolenAmount;
       targetDoc.economy.transactions.push({
         type: 'expense',
         message: `Robbed by ${interaction.user.tag}`,
         amount: stolenAmount
       });
-
       await userDoc.save();
       await targetDoc.save();
 
@@ -123,7 +121,6 @@ export class RobCommand extends Command {
         message: `Got caught robbing someone`,
         amount: fineAmount
       });
-
       await userDoc.save();
 
       return interaction.editReply({

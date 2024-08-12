@@ -50,118 +50,63 @@ export class SlotsCommand extends Command {
       0
     );
 
-    if (wager === 'all') {
-      const userWallet = userDoc.economy.wallet;
+    const realWager =
+      wager === 'all' ? userDoc.economy.wallet : parseMoney(wager);
 
-      if (userWallet < gamblingSettings.min) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You need at least ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
-            )
-          ]
-        });
-      }
+    if (realWager < gamblingSettings.min) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            `You need at least ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
+          )
+        ]
+      });
+    }
 
-      userDoc.economy.wagered += userWallet;
+    if (realWager > userDoc.economy.wallet) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            'You do not have enough money to play this game!'
+          )
+        ]
+      });
+    }
 
-      if (points) {
-        const profit = userWallet * points;
+    userDoc.economy.wagered += realWager;
 
-        userDoc.economy.wallet += profit;
-        userDoc.economy.transactions.push({
-          type: 'income',
-          message: `Won a slots game`,
-          amount: profit
-        });
+    if (points) {
+      const profit = realWager * points;
 
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.success(
-              `You won ${bold(`$${prettyNumber(profit)}`)} with a ${bold(points.toString())} points combination!\n${visualize}`
-            )
-          ]
-        });
-      } else {
-        userDoc.economy.wallet -= userWallet;
-        userDoc.economy.transactions.push({
-          type: 'expense',
-          message: `Lost a slots game`,
-          amount: userWallet
-        });
+      userDoc.economy.wallet += profit;
+      userDoc.economy.transactions.push({
+        type: 'income',
+        message: `Won a slots game`,
+        amount: profit
+      });
 
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You lost ${bold(`$${prettyNumber(userWallet)}`)}! Better luck next time!\n${visualize}`
-            )
-          ]
-        });
-      }
+      interaction.editReply({
+        embeds: [
+          this.container.embeds.success(
+            `You won ${bold(`$${prettyNumber(profit)}`)} with a ${bold(points.toString())} points combination!\n${visualize}`
+          )
+        ]
+      });
     } else {
-      const parsedAmount = parseMoney(wager);
+      userDoc.economy.wallet -= realWager;
+      userDoc.economy.transactions.push({
+        type: 'expense',
+        message: `Lost a slots game`,
+        amount: realWager
+      });
 
-      if (!parsedAmount) {
-        return interaction.editReply({
-          embeds: [this.container.embeds.error('Invalid amount of money!')]
-        });
-      }
-
-      if (parsedAmount < gamblingSettings.min) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You need at least  ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
-            )
-          ]
-        });
-      }
-
-      if (parsedAmount > userDoc.economy.wallet) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              'You do not have enough money to play this game!'
-            )
-          ]
-        });
-      }
-
-      userDoc.economy.wagered += parsedAmount;
-
-      if (points) {
-        const profit = parsedAmount * points;
-
-        userDoc.economy.wallet += profit;
-        userDoc.economy.transactions.push({
-          type: 'income',
-          message: `Won a slots game`,
-          amount: profit
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.success(
-              `You won ${bold(`$${prettyNumber(profit)}`)} with a ${bold(points.toString())} points combination!\n${visualize}`
-            )
-          ]
-        });
-      } else {
-        userDoc.economy.wallet -= parsedAmount;
-        userDoc.economy.transactions.push({
-          type: 'expense',
-          message: `Lost a slots game`,
-          amount: parsedAmount
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You lost ${bold(`$${prettyNumber(parsedAmount)}`)}! Better luck next time!\n${visualize}`
-            )
-          ]
-        });
-      }
+      interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            `You lost ${bold(`$${prettyNumber(realWager)}`)}! Better luck next time!\n${visualize}`
+          )
+        ]
+      });
     }
 
     return await userDoc.save();

@@ -19,5 +19,5 @@ export function prettyNumber(number: number) {
 export function parseMoney(input: string) {
   const parsed = parseInt(input);
 
-  return isNaN(parsed) || parsed < 1 || parsed > 100000000 ? NaN : parsed;
+  return isNaN(parsed) || parsed < 1 || parsed > 100000000 ? 0 : parsed;
 }

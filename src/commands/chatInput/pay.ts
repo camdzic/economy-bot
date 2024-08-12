@@ -1,24 +1,35 @@
-import { ApplicationCommandOptionType, ChannelType, bold } from 'discord.js';
+import {
+  ApplicationCommandOptionType,
+  ChannelType,
+  bold,
+  userMention
+} from 'discord.js';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import { parseMoney, prettyNumber } from '#lib/utils';
 
 @ApplyOptions<Command.Options>({
-  description: 'Deposit money to your bank',
+  description: 'Pay money to someone',
   detailedDescription: {
-    usage: '<amount>'
+    usage: '<target> <amount>'
   },
   runIn: ChannelType.GuildText
 })
-export class DepositCommand extends Command {
+export class PayCommand extends Command {
   override registerApplicationCommands(registry: Command.Registry) {
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,
       options: [
         {
+          name: 'target',
+          description: 'The target user',
+          type: ApplicationCommandOptionType.User,
+          required: true
+        },
+        {
           name: 'amount',
-          description: 'The amount of money to deposit',
+          description: 'The amount of money to pay',
           type: ApplicationCommandOptionType.String,
           required: true
         }
@@ -31,7 +42,22 @@ export class DepositCommand extends Command {
   ) {
     await interaction.deferReply();
 
+    const target = interaction.options.getUser('target', true);
     const amount = interaction.options.getString('amount', true);
+
+    if (target.bot) {
+      return interaction.editReply({
+        embeds: [this.container.embeds.error(`You can't pay money to a bot!`)]
+      });
+    }
+
+    if (target.id === interaction.user.id) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(`You can't pay money to yourself!`)
+        ]
+      });
+    }
 
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
@@ -45,7 +71,7 @@ export class DepositCommand extends Command {
       return interaction.editReply({
         embeds: [
           this.container.embeds.error(
-            `You must deposit at least ${bold(`$1`)} into your bank!`
+            `You must pay at least ${bold(`$1`)} to someone!`
           )
         ]
       });
@@ -61,14 +87,32 @@ export class DepositCommand extends Command {
       });
     }
 
+    const targetDoc = await this.container.helpers.database.getUserDocument(
+      interaction.guildId,
+      target.id
+    );
+
     userDoc.economy.wallet -= realAmount;
-    userDoc.economy.bank += realAmount;
+    userDoc.economy.transactions.push({
+      type: 'expense',
+      message: `Paid to ${target.tag}`,
+      amount: realAmount
+    });
+    targetDoc.economy.wallet += realAmount;
+    targetDoc.economy.transactions.push({
+      type: 'income',
+      message: `Received from ${interaction.user.tag}`,
+      amount: realAmount
+    });
     await userDoc.save();
+    await targetDoc.save();
 
     return interaction.editReply({
       embeds: [
         this.container.embeds.success(
-          `You deposited ${bold(`$${prettyNumber(realAmount)}`)} into your bank!`
+          `You paid ${bold(`$${prettyNumber(realAmount)}`)} to ${userMention(
+            target.id
+          )}!`
         )
       ]
     });

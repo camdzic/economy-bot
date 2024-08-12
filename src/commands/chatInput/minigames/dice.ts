@@ -51,190 +51,99 @@ export class DiceCommand extends Command {
 
     const diceRoll = randomNumber(1, 6);
 
-    if (wager === 'all') {
-      const userWallet = userDoc.economy.wallet;
+    const realWager =
+      wager === 'all' ? userDoc.economy.wallet : parseMoney(wager);
 
-      if (userWallet < gamblingSettings.min) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You need at least ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
+    if (realWager < gamblingSettings.min) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            `You need at least ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
+          )
+        ]
+      });
+    }
+
+    if (realWager > userDoc.economy.wallet) {
+      return interaction.editReply({
+        embeds: [
+          this.container.embeds.error(
+            'You do not have enough money to play this game!'
+          )
+        ]
+      });
+    }
+
+    userDoc.economy.wagered += realWager;
+
+    if (diceRoll === guess) {
+      userDoc.economy.wallet += realWager;
+      userDoc.economy.transactions.push({
+        type: 'income',
+        message: `Won a dice game`,
+        amount: realWager
+      });
+
+      interaction.editReply({
+        embeds: [
+          this.container.embeds
+            .normal()
+            .setTitle('Dice Win')
+            .setDescription('You guessed correctly!')
+            .addFields(
+              {
+                name: 'Guess',
+                value: guess.toString(),
+                inline: true
+              },
+              {
+                name: 'Dice Roll',
+                value: diceRoll.toString(),
+                inline: true
+              },
+              {
+                name: 'Profit',
+                value: `$${prettyNumber(realWager)}`,
+                inline: true
+              }
             )
-          ]
-        });
-      }
-
-      userDoc.economy.wagered += userWallet;
-
-      if (diceRoll === guess) {
-        userDoc.economy.wallet += userWallet;
-        userDoc.economy.transactions.push({
-          type: 'income',
-          message: `Won a dice game`,
-          amount: userWallet
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds
-              .normal()
-              .setTitle('Dice Win')
-              .setDescription('You guessed correctly!')
-              .addFields(
-                {
-                  name: 'Guess',
-                  value: guess.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Dice Roll',
-                  value: diceRoll.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Profit',
-                  value: `$${prettyNumber(userWallet)}`,
-                  inline: true
-                }
-              )
-              .setColor(DefaultColor.Success)
-          ]
-        });
-      } else {
-        userDoc.economy.wallet -= userWallet;
-        userDoc.economy.transactions.push({
-          type: 'expense',
-          message: `Lost a dice game`,
-          amount: userWallet
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds
-              .normal()
-              .setTitle('Dice Loss')
-              .setDescription('You guessed incorrectly!')
-              .addFields(
-                {
-                  name: 'Guess',
-                  value: guess.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Dice Roll',
-                  value: diceRoll.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Loss',
-                  value: `$${prettyNumber(userWallet)}`,
-                  inline: true
-                }
-              )
-              .setColor(DefaultColor.Error)
-          ]
-        });
-      }
+            .setColor(DefaultColor.Success)
+        ]
+      });
     } else {
-      const parsedAmount = parseMoney(wager);
+      userDoc.economy.wallet -= realWager;
+      userDoc.economy.transactions.push({
+        type: 'expense',
+        message: `Lost a dice game`,
+        amount: realWager
+      });
 
-      if (!parsedAmount) {
-        return interaction.editReply({
-          embeds: [this.container.embeds.error('Invalid amount of money!')]
-        });
-      }
-
-      if (parsedAmount < gamblingSettings.min) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              `You need at least  ${bold(`$${prettyNumber(gamblingSettings.min)}`)} to play this game!`
+      interaction.editReply({
+        embeds: [
+          this.container.embeds
+            .normal()
+            .setTitle('Dice Loss')
+            .setDescription('You guessed incorrectly!')
+            .addFields(
+              {
+                name: 'Guess',
+                value: guess.toString(),
+                inline: true
+              },
+              {
+                name: 'Dice Roll',
+                value: diceRoll.toString(),
+                inline: true
+              },
+              {
+                name: 'Loss',
+                value: `$${prettyNumber(realWager)}`,
+                inline: true
+              }
             )
-          ]
-        });
-      }
-
-      if (parsedAmount > userDoc.economy.wallet) {
-        return interaction.editReply({
-          embeds: [
-            this.container.embeds.error(
-              'You do not have enough money to play this game!'
-            )
-          ]
-        });
-      }
-
-      userDoc.economy.wagered += parsedAmount;
-
-      if (diceRoll === guess) {
-        userDoc.economy.wallet += parsedAmount;
-        userDoc.economy.transactions.push({
-          type: 'income',
-          message: `Won a dice game`,
-          amount: parsedAmount
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds
-              .normal()
-              .setTitle('Dice Win')
-              .setDescription('You guessed correctly!')
-              .addFields(
-                {
-                  name: 'Guess',
-                  value: guess.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Dice Roll',
-                  value: diceRoll.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Profit',
-                  value: `$${prettyNumber(parsedAmount)}`,
-                  inline: true
-                }
-              )
-              .setColor(DefaultColor.Success)
-          ]
-        });
-      } else {
-        userDoc.economy.wallet -= parsedAmount;
-        userDoc.economy.transactions.push({
-          type: 'expense',
-          message: `Lost a dice game`,
-          amount: parsedAmount
-        });
-
-        interaction.editReply({
-          embeds: [
-            this.container.embeds
-              .normal()
-              .setTitle('Dice Loss')
-              .setDescription('You guessed incorrectly!')
-              .addFields(
-                {
-                  name: 'Guess',
-                  value: guess.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Dice Roll',
-                  value: diceRoll.toString(),
-                  inline: true
-                },
-                {
-                  name: 'Loss',
-                  value: `$${prettyNumber(parsedAmount)}`,
-                  inline: true
-                }
-              )
-              .setColor(DefaultColor.Error)
-          ]
-        });
-      }
+            .setColor(DefaultColor.Error)
+        ]
+      });
     }
 
     return await userDoc.save();
