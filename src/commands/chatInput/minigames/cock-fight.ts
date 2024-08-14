@@ -1,13 +1,13 @@
-import { ApplicationCommandOptionType, ChannelType, bold } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { cockfightCommand, gamblingSettings } from '#lib/constants';
-import { parseMoney, prettyNumber, randomNumber } from '#lib/utils';
+import { ApplicationCommandOptionType, ChannelType, bold } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { cockfightCommand, gamblingSettings } from "#lib/constants";
+import { parseMoney, prettyNumber, randomNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Fight against another chicken',
+  description: "Fight against another chicken",
   detailedDescription: {
-    usage: '<wager>'
+    usage: "<wager>"
   },
   cooldownDelay: gamblingSettings.cooldown,
   runIn: ChannelType.GuildText
@@ -21,8 +21,8 @@ export class CockfightCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'wager',
-          description: 'The amount of money to wager',
+          name: "wager",
+          description: "The amount of money to wager",
           type: ApplicationCommandOptionType.String,
           required: true
         }
@@ -31,11 +31,11 @@ export class CockfightCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
-    const wager = interaction.options.getString('wager', true);
+    const wager = interaction.options.getString("wager", true);
 
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
@@ -45,7 +45,7 @@ export class CockfightCommand extends Command {
     const game = this.initializeGame(interaction.guildId, interaction.user.id);
 
     const realWager =
-      wager === 'all' ? userDoc.economy.wallet : parseMoney(wager);
+      wager === "all" ? userDoc.economy.wallet : parseMoney(wager);
 
     if (realWager < gamblingSettings.min) {
       return interaction.editReply({
@@ -61,7 +61,7 @@ export class CockfightCommand extends Command {
       return interaction.editReply({
         embeds: [
           this.container.embeds.error(
-            'You do not have enough money to play this game!'
+            "You do not have enough money to play this game!"
           )
         ]
       });
@@ -69,11 +69,11 @@ export class CockfightCommand extends Command {
 
     userDoc.economy.wagered += realWager;
 
-    if (game.winner === 'user') {
+    if (game.winner === "user") {
       userDoc.economy.wallet += realWager;
       userDoc.economy.transactions.push({
-        type: 'income',
-        message: 'Won a cockfight game',
+        type: "income",
+        message: "Won a cockfight game",
         amount: realWager
       });
 
@@ -87,8 +87,8 @@ export class CockfightCommand extends Command {
     } else {
       userDoc.economy.wallet -= realWager;
       userDoc.economy.transactions.push({
-        type: 'expense',
-        message: 'Lost a cockfight game',
+        type: "expense",
+        message: "Lost a cockfight game",
         amount: realWager
       });
 
@@ -126,7 +126,7 @@ export class CockfightCommand extends Command {
       this.setWinRate(guildId, userId, newWinRate);
 
       return {
-        winner: 'user',
+        winner: "user",
         rates: {
           user: newWinRate,
           bot: botWinRate
@@ -136,7 +136,7 @@ export class CockfightCommand extends Command {
       this.setWinRate(guildId, userId, cockfightCommand.startingWinRate);
 
       return {
-        winner: 'bot',
+        winner: "bot",
         rates: {
           user: winRate,
           bot: botWinRate + 1

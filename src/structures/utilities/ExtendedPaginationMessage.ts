@@ -1,4 +1,4 @@
-import { ComponentType } from 'discord.js';
+import { ComponentType } from "discord.js";
 import {
   PaginatedMessage,
   PaginatedMessageAction,
@@ -6,7 +6,7 @@ import {
   PaginatedMessagePage,
   actionIsButtonOrMenu,
   actionIsLinkButton
-} from '@sapphire/discord.js-utilities';
+} from "@sapphire/discord.js-utilities";
 
 function actionIsButton(
   action: PaginatedMessageAction

@@ -1,13 +1,13 @@
-import { ApplicationCommandOptionType, ChannelType, bold } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { DefaultColor, gamblingSettings } from '#lib/constants';
-import { parseMoney, prettyNumber, randomNumber } from '#lib/utils';
+import { ApplicationCommandOptionType, ChannelType, bold } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { DefaultColor, gamblingSettings } from "#lib/constants";
+import { parseMoney, prettyNumber, randomNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Play a dice game',
+  description: "Play a dice game",
   detailedDescription: {
-    usage: '<wager> <guess>'
+    usage: "<wager> <guess>"
   },
   cooldownDelay: gamblingSettings.cooldown,
   runIn: ChannelType.GuildText
@@ -19,14 +19,14 @@ export class DiceCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'wager',
-          description: 'The amount of money to wager',
+          name: "wager",
+          description: "The amount of money to wager",
           type: ApplicationCommandOptionType.String,
           required: true
         },
         {
-          name: 'guess',
-          description: 'The number you think the dice will roll',
+          name: "guess",
+          description: "The number you think the dice will roll",
           type: ApplicationCommandOptionType.Integer,
           minValue: 1,
           maxValue: 6,
@@ -37,12 +37,12 @@ export class DiceCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
-    const wager = interaction.options.getString('wager', true);
-    const guess = interaction.options.getInteger('guess', true);
+    const wager = interaction.options.getString("wager", true);
+    const guess = interaction.options.getInteger("guess", true);
 
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
@@ -52,7 +52,7 @@ export class DiceCommand extends Command {
     const diceRoll = randomNumber(1, 6);
 
     const realWager =
-      wager === 'all' ? userDoc.economy.wallet : parseMoney(wager);
+      wager === "all" ? userDoc.economy.wallet : parseMoney(wager);
 
     if (realWager < gamblingSettings.min) {
       return interaction.editReply({
@@ -68,7 +68,7 @@ export class DiceCommand extends Command {
       return interaction.editReply({
         embeds: [
           this.container.embeds.error(
-            'You do not have enough money to play this game!'
+            "You do not have enough money to play this game!"
           )
         ]
       });
@@ -79,7 +79,7 @@ export class DiceCommand extends Command {
     if (diceRoll === guess) {
       userDoc.economy.wallet += realWager;
       userDoc.economy.transactions.push({
-        type: 'income',
+        type: "income",
         message: `Won a dice game`,
         amount: realWager
       });
@@ -88,21 +88,21 @@ export class DiceCommand extends Command {
         embeds: [
           this.container.embeds
             .normal()
-            .setTitle('Dice Win')
-            .setDescription('You guessed correctly!')
+            .setTitle("Dice Win")
+            .setDescription("You guessed correctly!")
             .addFields(
               {
-                name: 'Guess',
+                name: "Guess",
                 value: guess.toString(),
                 inline: true
               },
               {
-                name: 'Dice Roll',
+                name: "Dice Roll",
                 value: diceRoll.toString(),
                 inline: true
               },
               {
-                name: 'Profit',
+                name: "Profit",
                 value: `$${prettyNumber(realWager)}`,
                 inline: true
               }
@@ -113,7 +113,7 @@ export class DiceCommand extends Command {
     } else {
       userDoc.economy.wallet -= realWager;
       userDoc.economy.transactions.push({
-        type: 'expense',
+        type: "expense",
         message: `Lost a dice game`,
         amount: realWager
       });
@@ -122,21 +122,21 @@ export class DiceCommand extends Command {
         embeds: [
           this.container.embeds
             .normal()
-            .setTitle('Dice Loss')
-            .setDescription('You guessed incorrectly!')
+            .setTitle("Dice Loss")
+            .setDescription("You guessed incorrectly!")
             .addFields(
               {
-                name: 'Guess',
+                name: "Guess",
                 value: guess.toString(),
                 inline: true
               },
               {
-                name: 'Dice Roll',
+                name: "Dice Roll",
                 value: diceRoll.toString(),
                 inline: true
               },
               {
-                name: 'Loss',
+                name: "Loss",
                 value: `$${prettyNumber(realWager)}`,
                 inline: true
               }

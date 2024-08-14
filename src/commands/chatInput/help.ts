@@ -1,10 +1,10 @@
-import { ApplicationCommandOptionType, ChannelType, bold } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { toTitleCase } from '@sapphire/utilities';
+import { ApplicationCommandOptionType, ChannelType, bold } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { toTitleCase } from "@sapphire/utilities";
 
 @ApplyOptions<Command.Options>({
-  description: 'Get help with commands',
+  description: "Get help with commands",
   runIn: ChannelType.GuildText
 })
 export class HelpCommand extends Command {
@@ -14,8 +14,8 @@ export class HelpCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'command',
-          description: 'The command to get help with',
+          name: "command",
+          description: "The command to get help with",
           type: ApplicationCommandOptionType.String
         }
       ]
@@ -27,11 +27,11 @@ export class HelpCommand extends Command {
   ) {
     await interaction.deferReply();
 
-    const commandName = interaction.options.getString('command');
+    const commandName = interaction.options.getString("command");
 
     if (commandName) {
       const command = this.container.stores
-        .get('commands')
+        .get("commands")
         .find((c) => c.name === commandName);
 
       if (!command) {
@@ -47,28 +47,28 @@ export class HelpCommand extends Command {
             .setTitle(toTitleCase(command.name))
             .addFields(
               {
-                name: 'Description',
+                name: "Description",
                 value: command.description
               },
               {
-                name: 'Usage',
-                value: `/${command.name} ${command.detailedDescription.usage ?? ''}`
+                name: "Usage",
+                value: `/${command.name} ${command.detailedDescription.usage ?? ""}`
               }
             )
         ]
       });
     } else {
       const prettyCommands = this.container.stores
-        .get('commands')
+        .get("commands")
         .filter((c) => c.enabled)
         .map((c) => `> ${bold(`/${c.name}`)}・${c.description}`)
-        .join('\n');
+        .join("\n");
 
       return interaction.editReply({
         embeds: [
           this.container.embeds
             .normal()
-            .setTitle('Commands')
+            .setTitle("Commands")
             .setDescription(prettyCommands)
         ]
       });

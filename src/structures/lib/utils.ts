@@ -1,4 +1,4 @@
-export * from '@sapphire/utilities';
+export * from "@sapphire/utilities";
 
 // Given a number, return a random number between some range
 export function randomNumber(min: number, max: number) {
@@ -12,7 +12,7 @@ export function proportionOf(value: number, percentage: number) {
 
 // Given a number, return a string with commas separating every 3 digits
 export function prettyNumber(number: number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 // Given a string, parse it into a number if it's a valid number between 1 and 100000000

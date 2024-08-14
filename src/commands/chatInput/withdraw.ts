@@ -1,13 +1,13 @@
-import { ApplicationCommandOptionType, bold } from 'discord.js';
-import { ChannelType } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { parseMoney, prettyNumber } from '#lib/utils';
+import { ApplicationCommandOptionType, bold } from "discord.js";
+import { ChannelType } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { parseMoney, prettyNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Withdraw money from your bank',
+  description: "Withdraw money from your bank",
   detailedDescription: {
-    usage: '<amount>'
+    usage: "<amount>"
   },
   runIn: ChannelType.GuildText
 })
@@ -18,8 +18,8 @@ export class WithdrawCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'amount',
-          description: 'The amount of money to withdraw',
+          name: "amount",
+          description: "The amount of money to withdraw",
           type: ApplicationCommandOptionType.String,
           required: true
         }
@@ -28,11 +28,11 @@ export class WithdrawCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
-    const amount = interaction.options.getString('amount', true);
+    const amount = interaction.options.getString("amount", true);
 
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
@@ -40,7 +40,7 @@ export class WithdrawCommand extends Command {
     );
 
     const realAmount =
-      amount === 'all' ? userDoc.economy.bank : parseMoney(amount);
+      amount === "all" ? userDoc.economy.bank : parseMoney(amount);
 
     if (realAmount < 1) {
       return interaction.editReply({

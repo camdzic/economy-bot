@@ -1,12 +1,12 @@
-import { ChannelType, bold } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { Time } from '@sapphire/time-utilities';
-import { dailyCommand } from '#lib/constants';
-import { prettyNumber, randomNumber } from '#lib/utils';
+import { ChannelType, bold } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { Time } from "@sapphire/time-utilities";
+import { dailyCommand } from "#lib/constants";
+import { prettyNumber, randomNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Collect daily reward',
+  description: "Collect daily reward",
   cooldownDelay: Time.Day,
   runIn: ChannelType.GuildText
 })
@@ -19,7 +19,7 @@ export class DailyCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
@@ -35,7 +35,7 @@ export class DailyCommand extends Command {
 
     userDoc.economy.wallet += earnedMoney;
     userDoc.economy.transactions.push({
-      type: 'income',
+      type: "income",
       message: `Collected daily reward`,
       amount: earnedMoney
     });

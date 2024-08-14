@@ -1,12 +1,12 @@
-import { ChannelType, userMention } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { Time } from '@sapphire/time-utilities';
-import { prettyNumber } from '#lib/utils';
-import { ExtendedPaginatedMessage } from '#utilities/ExtendedPaginationMessage';
+import { ChannelType, userMention } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { Time } from "@sapphire/time-utilities";
+import { prettyNumber } from "#lib/utils";
+import { ExtendedPaginatedMessage } from "#utilities/ExtendedPaginationMessage";
 
 @ApplyOptions<Command.Options>({
-  description: 'Get top 10 users with the most money',
+  description: "Get top 10 users with the most money",
   runIn: ChannelType.GuildText
 })
 export class LeaderboardCommand extends Command {
@@ -18,7 +18,7 @@ export class LeaderboardCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     const leaderboard = this.container.services.leaderboard.getLeaderboard(
       interaction.guildId
@@ -30,14 +30,14 @@ export class LeaderboardCommand extends Command {
         embeds: [
           this.container.embeds
             .normal()
-            .setTitle('Leaderboard')
+            .setTitle("Leaderboard")
             .setDescription(
               chunk
                 .map(
                   (c) =>
                     `${c.i}. ${userMention(c.userId)}・$${prettyNumber(c.money)}`
                 )
-                .join('\n')
+                .join("\n")
             )
         ]
       }))
@@ -53,7 +53,7 @@ export class LeaderboardCommand extends Command {
           ephemeral: true
         };
       });
-    paginatedMessage.pageIndexPrefix = 'Page';
+    paginatedMessage.pageIndexPrefix = "Page";
 
     return paginatedMessage.run(interaction, interaction.user);
   }

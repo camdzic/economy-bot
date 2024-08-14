@@ -1,4 +1,4 @@
-import { UserModel } from '#models/UserModel';
+import { UserModel } from "#models/UserModel";
 
 export class DatabaseHelper {
   async getUserDocument(guildId: string, userId: string) {

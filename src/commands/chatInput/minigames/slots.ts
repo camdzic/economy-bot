@@ -1,14 +1,14 @@
-import { ApplicationCommandOptionType, ChannelType, bold } from 'discord.js';
-import { Results, SlotMachine, SlotSymbol } from 'slot-machine';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { gamblingSettings } from '#lib/constants';
-import { parseMoney, prettyNumber } from '#lib/utils';
+import { ApplicationCommandOptionType, ChannelType, bold } from "discord.js";
+import { Results, SlotMachine, SlotSymbol } from "slot-machine";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { gamblingSettings } from "#lib/constants";
+import { parseMoney, prettyNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Spin the slots machine',
+  description: "Spin the slots machine",
   detailedDescription: {
-    usage: '<wager>'
+    usage: "<wager>"
   },
   cooldownDelay: gamblingSettings.cooldown,
   runIn: ChannelType.GuildText
@@ -20,8 +20,8 @@ export class SlotsCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'wager',
-          description: 'The amount of money to wager',
+          name: "wager",
+          description: "The amount of money to wager",
           type: ApplicationCommandOptionType.String,
           required: true
         }
@@ -30,11 +30,11 @@ export class SlotsCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
-    const wager = interaction.options.getString('wager', true);
+    const wager = interaction.options.getString("wager", true);
 
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
@@ -51,7 +51,7 @@ export class SlotsCommand extends Command {
     );
 
     const realWager =
-      wager === 'all' ? userDoc.economy.wallet : parseMoney(wager);
+      wager === "all" ? userDoc.economy.wallet : parseMoney(wager);
 
     if (realWager < gamblingSettings.min) {
       return interaction.editReply({
@@ -67,7 +67,7 @@ export class SlotsCommand extends Command {
       return interaction.editReply({
         embeds: [
           this.container.embeds.error(
-            'You do not have enough money to play this game!'
+            "You do not have enough money to play this game!"
           )
         ]
       });
@@ -80,7 +80,7 @@ export class SlotsCommand extends Command {
 
       userDoc.economy.wallet += profit;
       userDoc.economy.transactions.push({
-        type: 'income',
+        type: "income",
         message: `Won a slots game`,
         amount: profit
       });
@@ -95,7 +95,7 @@ export class SlotsCommand extends Command {
     } else {
       userDoc.economy.wallet -= realWager;
       userDoc.economy.transactions.push({
-        type: 'expense',
+        type: "expense",
         message: `Lost a slots game`,
         amount: realWager
       });
@@ -116,19 +116,19 @@ export class SlotsCommand extends Command {
     const dollarSigns = ` 💵 💵 💵 `;
     const blackSquare = `⬛`;
 
-    let description = '';
+    let description = "";
 
     // Top row
     description += results.lines.slice(-2)[0].isWon
       ? `\n↘`
       : `\n${blackSquare}`;
     description += dollarSigns;
-    description += results.lines.slice(-1)[0].isWon ? '↙' : blackSquare;
+    description += results.lines.slice(-1)[0].isWon ? "↙" : blackSquare;
 
     // Middle rows
     for (let i = 0; i < results.lines.length - 2; i++) {
       description += results.lines[i].isWon ? `\n➡ ` : `\n${blackSquare} `;
-      description += results.lines[i].symbols.map((s) => s.display).join(' ');
+      description += results.lines[i].symbols.map((s) => s.display).join(" ");
       description += results.lines[i].isWon ? ` ⬅` : ` ${blackSquare}`;
     }
 
@@ -137,50 +137,50 @@ export class SlotsCommand extends Command {
       ? `\n↗`
       : `\n${blackSquare}`;
     description += dollarSigns;
-    description += results.lines.slice(-2)[0].isWon ? '↖' : blackSquare;
+    description += results.lines.slice(-2)[0].isWon ? "↖" : blackSquare;
 
     return description;
   }
 
   private get symbols() {
     return [
-      new SlotSymbol('1', {
-        display: '🍒',
+      new SlotSymbol("1", {
+        display: "🍒",
         points: 1,
         weight: 100
       }),
-      new SlotSymbol('2', {
-        display: '🍋',
+      new SlotSymbol("2", {
+        display: "🍋",
         points: 1,
         weight: 100
       }),
-      new SlotSymbol('3', {
-        display: '🍇',
+      new SlotSymbol("3", {
+        display: "🍇",
         points: 1,
         weight: 100
       }),
-      new SlotSymbol('4', {
-        display: '🍉',
+      new SlotSymbol("4", {
+        display: "🍉",
         points: 1,
         weight: 100
       }),
-      new SlotSymbol('5', {
-        display: '🍊',
+      new SlotSymbol("5", {
+        display: "🍊",
         points: 1,
         weight: 100
       }),
-      new SlotSymbol('b', {
-        display: '💰',
+      new SlotSymbol("b", {
+        display: "💰",
         points: 10,
         weight: 50
       }),
-      new SlotSymbol('c', {
-        display: '💎',
+      new SlotSymbol("c", {
+        display: "💎",
         points: 100,
         weight: 25
       }),
-      new SlotSymbol('w', {
-        display: '🃏',
+      new SlotSymbol("w", {
+        display: "🃏",
         points: 1,
         weight: 30,
         wildcard: true

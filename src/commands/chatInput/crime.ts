@@ -1,11 +1,11 @@
-import { ChannelType, bold } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { crimeCommand } from '#lib/constants';
-import { prettyNumber, randomNumber } from '#lib/utils';
+import { ChannelType, bold } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { crimeCommand } from "#lib/constants";
+import { prettyNumber, randomNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Commit a crime for money',
+  description: "Commit a crime for money",
   cooldownDelay: crimeCommand.cooldown,
   runIn: ChannelType.GuildText
 })
@@ -18,7 +18,7 @@ export class CrimeCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
@@ -46,7 +46,7 @@ export class CrimeCommand extends Command {
     if (caughtChance <= crimeCommand.caughtAt) {
       userDoc.economy.wallet -= crimeCommand.income.min;
       userDoc.economy.transactions.push({
-        type: 'expense',
+        type: "expense",
         message: `Got caught committing a crime`,
         amount: earnedAmount
       });
@@ -62,7 +62,7 @@ export class CrimeCommand extends Command {
     } else {
       userDoc.economy.wallet += earnedAmount;
       userDoc.economy.transactions.push({
-        type: 'income',
+        type: "income",
         message: `Committed a crime`,
         amount: earnedAmount
       });

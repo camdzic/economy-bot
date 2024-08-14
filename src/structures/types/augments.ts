@@ -1,14 +1,14 @@
-import { DatabaseHelper } from '#helpers/DatabaseHelper';
-import { LeaderboardService } from '#services/LeaderboardService';
-import { EmbedBuilder } from '#utilities/EmbedBuilder';
+import { DatabaseHelper } from "#helpers/DatabaseHelper";
+import { LeaderboardService } from "#services/LeaderboardService";
+import { EmbedBuilder } from "#utilities/EmbedBuilder";
 
-declare module '@skyra/env-utilities' {
+declare module "@skyra/env-utilities" {
   interface Env {
     MONGO_URI: string;
   }
 }
 
-declare module '@sapphire/pieces' {
+declare module "@sapphire/pieces" {
   interface Container {
     embeds: EmbedBuilder;
 
@@ -22,7 +22,7 @@ declare module '@sapphire/pieces' {
   }
 }
 
-declare module '@sapphire/framework' {
+declare module "@sapphire/framework" {
   export interface DetailedDescriptionCommand {
     usage: string;
   }

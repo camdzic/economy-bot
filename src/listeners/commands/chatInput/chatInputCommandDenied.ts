@@ -3,7 +3,7 @@ import {
   Events,
   Listener,
   UserError
-} from '@sapphire/framework';
+} from "@sapphire/framework";
 
 export class ChatInputCommandDeniedListener extends Listener<
   typeof Events.ChatInputCommandDenied
@@ -11,7 +11,7 @@ export class ChatInputCommandDeniedListener extends Listener<
   override run(error: unknown, payload: ChatInputCommandDeniedPayload) {
     if (!(error instanceof UserError)) return;
 
-    if (Reflect.get(Object(error.context), 'silent')) return;
+    if (Reflect.get(Object(error.context), "silent")) return;
 
     if (payload.interaction.deferred || payload.interaction.replied) {
       return payload.interaction.editReply({

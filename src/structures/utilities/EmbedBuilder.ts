@@ -1,5 +1,5 @@
-import { EmbedBuilder as DJSEmbedBuilder } from 'discord.js';
-import { DefaultColor } from '#lib/constants';
+import { EmbedBuilder as DJSEmbedBuilder } from "discord.js";
+import { DefaultColor } from "#lib/constants";
 
 export class EmbedBuilder {
   normal() {
@@ -8,14 +8,14 @@ export class EmbedBuilder {
 
   success(message: string) {
     return new DJSEmbedBuilder()
-      .setTitle('Success!')
+      .setTitle("Success!")
       .setDescription(`✅ ${message}`)
       .setColor(DefaultColor.Success);
   }
 
   error(message: string) {
     return new DJSEmbedBuilder()
-      .setTitle('Oops!')
+      .setTitle("Oops!")
       .setDescription(`❌ ${message}`)
       .setColor(DefaultColor.Error);
   }

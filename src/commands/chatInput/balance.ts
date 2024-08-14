@@ -1,13 +1,13 @@
-import { ApplicationCommandOptionType, ChannelType } from 'discord.js';
-import { bold } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { prettyNumber } from '#lib/utils';
+import { ApplicationCommandOptionType, ChannelType } from "discord.js";
+import { bold } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { prettyNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Get balanace',
+  description: "Get balanace",
   detailedDescription: {
-    usage: '[target]'
+    usage: "[target]"
   },
   runIn: ChannelType.GuildText
 })
@@ -18,8 +18,8 @@ export class BalanceCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'target',
-          description: 'The target user',
+          name: "target",
+          description: "The target user",
           type: ApplicationCommandOptionType.User
         }
       ]
@@ -27,11 +27,11 @@ export class BalanceCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
-    const target = interaction.options.getUser('target') ?? interaction.user;
+    const target = interaction.options.getUser("target") ?? interaction.user;
 
     const userDoc = await this.container.helpers.database.getUserDocument(
       interaction.guildId,
@@ -46,12 +46,12 @@ export class BalanceCommand extends Command {
     const prettyTransactions = userDoc.economy.transactions
       .slice(-5)
       .map((t) => {
-        const type = t.type === 'income' ? '+' : '-';
+        const type = t.type === "income" ? "+" : "-";
 
         return `> [${type}$${prettyNumber(t.amount)}] ${t.message}`;
       })
       .reverse()
-      .join('\n');
+      .join("\n");
 
     if (prettyTransactions) {
       return interaction.editReply({
@@ -60,7 +60,7 @@ export class BalanceCommand extends Command {
             .normal()
             .setTitle(`${target.tag}'s Balance`)
             .setDescription(
-              `${bold('Wallet:')} $${wallet}\n${bold('Bank:')} $${bank}\n${bold('Total:')} $${total}\n${bold('Wagered:')} $${wagered}\n\n${bold('Recent Transactions:')}\n${prettyTransactions}`
+              `${bold("Wallet:")} $${wallet}\n${bold("Bank:")} $${bank}\n${bold("Total:")} $${total}\n${bold("Wagered:")} $${wagered}\n\n${bold("Recent Transactions:")}\n${prettyTransactions}`
             )
         ]
       });
@@ -71,7 +71,7 @@ export class BalanceCommand extends Command {
             .normal()
             .setTitle(`${target.tag}'s Balance`)
             .setDescription(
-              `${bold('Wallet:')} $${wallet}\n${bold('Bank:')} $${bank}\n${bold('Total:')} $${total}\n${bold('Wagered:')} $${wagered}`
+              `${bold("Wallet:")} $${wallet}\n${bold("Bank:")} $${bank}\n${bold("Total:")} $${total}\n${bold("Wagered:")} $${wagered}`
             )
         ]
       });

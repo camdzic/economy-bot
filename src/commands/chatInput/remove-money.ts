@@ -3,17 +3,17 @@ import {
   ChannelType,
   bold,
   userMention
-} from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { prettyNumber } from '#lib/utils';
+} from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { prettyNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Remove money from someone',
+  description: "Remove money from someone",
   detailedDescription: {
-    usage: '<target> <amount>'
+    usage: "<target> <amount>"
   },
-  requiredUserPermissions: 'ManageGuild',
+  requiredUserPermissions: "ManageGuild",
   runIn: ChannelType.GuildText
 })
 export class RemoveMoneyCommand extends Command {
@@ -23,14 +23,14 @@ export class RemoveMoneyCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'target',
-          description: 'The target user',
+          name: "target",
+          description: "The target user",
           type: ApplicationCommandOptionType.User,
           required: true
         },
         {
-          name: 'amount',
-          description: 'The amount of money to remove',
+          name: "amount",
+          description: "The amount of money to remove",
           type: ApplicationCommandOptionType.Integer,
           minValue: 1,
           maxValue: 100000000,
@@ -41,12 +41,12 @@ export class RemoveMoneyCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
-    const target = interaction.options.getUser('target', true);
-    const amount = interaction.options.getInteger('amount', true);
+    const target = interaction.options.getUser("target", true);
+    const amount = interaction.options.getInteger("amount", true);
 
     if (target.bot) {
       return interaction.editReply({
@@ -73,7 +73,7 @@ export class RemoveMoneyCommand extends Command {
 
     userDoc.economy.wallet -= amount;
     userDoc.economy.transactions.push({
-      type: 'expense',
+      type: "expense",
       message: `Removed by ${interaction.user.tag}`,
       amount: amount
     });

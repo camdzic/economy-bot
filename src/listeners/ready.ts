@@ -1,8 +1,8 @@
-import { blue, white } from 'colorette';
-import mongoose from 'mongoose';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Events, Listener, StoreRegistryValue } from '@sapphire/framework';
-import { LeaderboardService } from '#services/LeaderboardService';
+import { blue, white } from "colorette";
+import mongoose from "mongoose";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, StoreRegistryValue } from "@sapphire/framework";
+import { LeaderboardService } from "#services/LeaderboardService";
 
 @ApplyOptions<Listener.Options>({ once: true })
 export class ClientReadyListener extends Listener<typeof Events.ClientReady> {
@@ -15,7 +15,7 @@ export class ClientReadyListener extends Listener<typeof Events.ClientReady> {
   private async initializeMongo() {
     try {
       await mongoose.connect(process.env.MONGO_URI);
-      this.container.logger.info('Connected to MongoDB');
+      this.container.logger.info("Connected to MongoDB");
 
       this.container.services = {
         leaderboard: new LeaderboardService()
@@ -41,7 +41,7 @@ export class ClientReadyListener extends Listener<typeof Events.ClientReady> {
 
   private styleStore(store: StoreRegistryValue, last: boolean) {
     return white(
-      `${last ? '└─' : '├─'} Loaded ${blue(store.size.toString().padEnd(3, ' '))} ${store.name}.`
+      `${last ? "└─" : "├─"} Loaded ${blue(store.size.toString().padEnd(3, " "))} ${store.name}.`
     );
   }
 }

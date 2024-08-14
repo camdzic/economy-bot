@@ -1,11 +1,11 @@
-import { ChannelType, bold } from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { workCommand } from '#lib/constants';
-import { pickRandom, prettyNumber, randomNumber } from '#lib/utils';
+import { ChannelType, bold } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { workCommand } from "#lib/constants";
+import { pickRandom, prettyNumber, randomNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Work for money',
+  description: "Work for money",
   cooldownDelay: workCommand.cooldown,
   runIn: ChannelType.GuildText
 })
@@ -18,7 +18,7 @@ export class WorkCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
@@ -35,7 +35,7 @@ export class WorkCommand extends Command {
 
     userDoc.economy.wallet += earnedMoney;
     userDoc.economy.transactions.push({
-      type: 'income',
+      type: "income",
       message: `Worked as a ${workedJob}`,
       amount: earnedMoney
     });

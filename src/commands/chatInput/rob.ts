@@ -3,14 +3,14 @@ import {
   ChannelType,
   bold,
   userMention
-} from 'discord.js';
-import { ApplyOptions } from '@sapphire/decorators';
-import { Command } from '@sapphire/framework';
-import { robCommand } from '#lib/constants';
-import { prettyNumber, proportionOf, randomNumber } from '#lib/utils';
+} from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Command } from "@sapphire/framework";
+import { robCommand } from "#lib/constants";
+import { prettyNumber, proportionOf, randomNumber } from "#lib/utils";
 
 @ApplyOptions<Command.Options>({
-  description: 'Rob someone',
+  description: "Rob someone",
   cooldownDelay: robCommand.cooldown,
   runIn: ChannelType.GuildText
 })
@@ -21,8 +21,8 @@ export class RobCommand extends Command {
       description: this.description,
       options: [
         {
-          name: 'target',
-          description: 'The target user',
+          name: "target",
+          description: "The target user",
           type: ApplicationCommandOptionType.User,
           required: true
         }
@@ -31,11 +31,11 @@ export class RobCommand extends Command {
   }
 
   override async chatInputRun(
-    interaction: Command.ChatInputCommandInteraction<'cached'>
+    interaction: Command.ChatInputCommandInteraction<"cached">
   ) {
     await interaction.deferReply();
 
-    const target = interaction.options.getUser('target', true);
+    const target = interaction.options.getUser("target", true);
 
     if (target.bot) {
       return interaction.editReply({
@@ -89,13 +89,13 @@ export class RobCommand extends Command {
 
       userDoc.economy.wallet += stolenAmount;
       userDoc.economy.transactions.push({
-        type: 'income',
+        type: "income",
         message: `Robbed ${target.tag}`,
         amount: stolenAmount
       });
       targetDoc.economy.wallet -= stolenAmount;
       targetDoc.economy.transactions.push({
-        type: 'expense',
+        type: "expense",
         message: `Robbed by ${interaction.user.tag}`,
         amount: stolenAmount
       });
@@ -117,7 +117,7 @@ export class RobCommand extends Command {
 
       userDoc.economy.wallet -= fineAmount;
       userDoc.economy.transactions.push({
-        type: 'expense',
+        type: "expense",
         message: `Got caught robbing someone`,
         amount: fineAmount
       });

@@ -1,13 +1,13 @@
-import { join } from 'path';
-import { Time } from '@sapphire/time-utilities';
+import { join } from "path";
+import { Time } from "@sapphire/time-utilities";
 
-export const rootDir = join(__dirname, '..', '..', '..');
-export const srcDir = join(rootDir, 'src');
+export const rootDir = join(__dirname, "..", "..", "..");
+export const srcDir = join(rootDir, "src");
 
 export enum DefaultColor {
-  Primary = 'Blue',
-  Success = 'Green',
-  Error = 'Red'
+  Primary = "Blue",
+  Success = "Green",
+  Error = "Red"
 }
 
 export const gamblingSettings = {
@@ -21,18 +21,18 @@ export const workCommand = {
     max: 150
   },
   jobs: [
-    'Developer',
-    'Designer',
-    'Artist',
-    'Musician',
-    'Writer',
-    'Chef',
-    'Conductor',
-    'Cinematographer',
-    'Editor',
-    'Animator',
-    'Voice Actor',
-    'Sound Designer'
+    "Developer",
+    "Designer",
+    "Artist",
+    "Musician",
+    "Writer",
+    "Chef",
+    "Conductor",
+    "Cinematographer",
+    "Editor",
+    "Animator",
+    "Voice Actor",
+    "Sound Designer"
   ],
   cooldown: Time.Second * 30
 };

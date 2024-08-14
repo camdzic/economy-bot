@@ -1,14 +1,14 @@
-import { container } from '@sapphire/framework';
-import { Time, TimerManager } from '@sapphire/time-utilities';
-import { UserModel } from '#models/UserModel';
-import { Leaderboard } from '#types/leaderboard';
+import { container } from "@sapphire/framework";
+import { Time, TimerManager } from "@sapphire/time-utilities";
+import { UserModel } from "#models/UserModel";
+import { Leaderboard } from "#types/leaderboard";
 
 export class LeaderboardService {
   private result: Leaderboard[] = [];
 
   constructor() {
     this.refreshLeaderboard();
-    container.logger.info('Leaderboard service has been initialized');
+    container.logger.info("Leaderboard service has been initialized");
 
     TimerManager.setInterval(() => this.refreshLeaderboard(), Time.Minute);
   }

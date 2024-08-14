@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 export interface IUser {
   guildId: string;
@@ -8,7 +8,7 @@ export interface IUser {
     bank: number;
     wagered: number;
     transactions: {
-      type: 'income' | 'expense';
+      type: "income" | "expense";
       message: string;
       amount: number;
     }[];
@@ -35,4 +35,4 @@ const UserSchema = new Schema<IUser>({
   }
 });
 
-export const UserModel = model<IUser>('User', UserSchema);
+export const UserModel = model<IUser>("User", UserSchema);
